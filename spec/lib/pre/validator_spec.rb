@@ -1,21 +1,39 @@
 require 'spec_helper'
 require 'pre/validator'
 require 'pre/server_validator'
+require 'pre/fake_validation'
 
 describe Pre::Validator do
-  it "indicates a basic email address is valid" do
-    @validator = described_class.new("vajrapani666@gmail.com")
-    @validator.should be_valid
+  before do
+    @validator = described_class.new
+    @validator.extend Pre::FakeValidation
   end
 
-  it "invalidates email for non-matching regex" do
-    @validator = described_class.new("vajrapani666-gmail.com")
-    @validator.should_not be_valid
+  context "default configuration" do
+    it "indicates a basic email address is valid" do
+      @validator.valid?("vajrapani666@gmail.com").should be_true
+    end
+
+    it "invalidates email for invalid format" do
+      @validator.valid?("vajrapani666-gmail.com").should be_false
+    end
+
+    it "invalidates email for non-existent server" do
+      @validator.stub_validator :domain, false
+      @validator.valid?("support@revolution.gov").should be_false
+    end
   end
 
-  it "invalidates email for non-existent server" do
-    @validator = described_class.new("support@revolution.gov")
-    @validator.should_receive(:valid_domain?).and_return(false)
-    @validator.should_not be_valid
+  context "configuration" do
+    it "allows server validation to be toggled" do
+      @validator.stub_validators(
+        :format, -> validator do
+          raise "Should not have called format"  
+        end,
+        :server, true
+      )
+      @validator = described_class.new(:validators => :format)
+      @validator.valid?("support@revolution.gov").should be_true
+    end
   end
 end
