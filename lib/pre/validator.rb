@@ -6,9 +6,9 @@ module Pre
       @options = defaults options
     end
 
-    def valid? address
+    def valid? address, options = {}
       self.address= address
-      validators.all? do |strategy|
+      validators(options[:validators]).all? do |strategy|
         validate strategy
       end
     end
@@ -31,13 +31,15 @@ module Pre
 
     private
 
-    def validators
-      Array @options[:validators]
+    def validators validators
+      Array(validators || @options[:validators])
     end
 
     def validate strategy
       internal_method = "valid_#{strategy}?".to_sym
       return send(internal_method) if respond_to? internal_method
+      return strategy.call @raw_address if strategy.respond_to? :call
+      return strategy.valid? @raw_address if strategy.respond_to? :valid?
       raise ArgumentError, "Could not identify strategy #{strategy}"
     end
 

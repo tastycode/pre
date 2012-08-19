@@ -2,7 +2,7 @@ module Pre
   module FakeValidation
     
     def stub_validator strategy, result
-      stubed_validators[strategy] = result 
+      stubbed_validators[strategy] = result 
     end
 
     def stub_validators *stubs
@@ -11,13 +11,13 @@ module Pre
       end
     end
 
-    def stubed_validators
-      @stubed_validators ||= {}
+    def stubbed_validators
+      @stubbed_validators ||= {}
     end
     
-    def validates strategy
-      return super unless stubed_validators.has_key? strategy
-      result = stubed_validators[strategy]
+    def validate strategy
+      return super unless stubbed_validators.has_key? strategy
+      result = stubbed_validators[strategy]
       return result.call self if result.respond_to? :call
       result
     end
