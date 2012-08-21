@@ -52,10 +52,79 @@ describe Pre::Validator do
       @validator.valid?("contact@revolution.org").should be_true
     end
 
-    it "allows delegated valid? method for validator" do
+    it "allows any object responding to valid? method for validator" do
       validating_stub = stub(:valid? => false)
       @validator = test_validator :validators => validating_stub
       @validator.valid?("info@revolution.gov").should be_false
+    end
+
+    it "allows a delegate to be specified" do
+      validating_delegate = mock()
+      @validator = test_validator :validators => validating_delegate
+      validating_delegate.expects(:delegate=).with(@validator)
+      validating_delegate.expects(:valid?).returns(false)
+      @validator.valid?("any@address.com").should be_false
+    end
+    #context "passing the validator to the validating class as optional second argument" do
+      #it "only passes the address to the validator if it only accepts one argument" do
+        #validating_object = Object.new
+        #class << validating_object
+          #def valid?(address)
+            #false
+          #end
+        #end
+        #@validator.expects(:valid?).with("foo@bar.com").returns(false) 
+        #@validator = test_validator :validators => validating_object
+        #@validator.valid?("foo@bar.com").should be_false
+      #end
+    #end
+  end
+  context "caching config" do
+    context "allows a cache store to be configured" do
+      it "delegates cache_read to cache store" do
+        mock_cache = mock()
+        mock_cache.expects(:read).with("test_key")
+        @validator = test_validator :validators => [], :cache_store => mock_cache
+        @validator.cache_read "test_key"
+      end
+
+
+      it "delegates cache_read to cache store" do
+        mock_cache = mock()
+        mock_cache.expects(:write).with("test_key", "test_value")
+        @validator = test_validator :validators => [], :cache_store => mock_cache
+        @validator.cache_write "test_key", "test_value"
+      end
+
+      it "exposes caching ability to collaborators" do
+        validating_delegate = Object.new
+        class << validating_delegate
+          
+          def delegate=(validator)
+            @validator = validator
+          end
+
+          def expensive_method
+            :expensive_result
+          end
+
+          def valid? address
+            existing_value = @validator.cache_read "foo"
+            return existing_value if existing_value
+            result = expensive_method  
+            @validator.cache_write "foo", result
+            false 
+          end
+        end
+
+        mock_cache = mock()
+        mock_cache.expects(:read).with("foo")
+        mock_cache.expects(:write).with("foo", :expensive_result)
+
+        @validator = test_validator :validators => validating_delegate, :cache_store => mock_cache
+        @validator.valid? "test@example.com"
+      end
+
     end
   end
 end

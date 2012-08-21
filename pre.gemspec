@@ -18,6 +18,6 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  ["rspec", "pry-nav"].each {|lib| s.add_development_dependency lib}
+  ["rspec", "mocha", "pry-nav"].each {|lib| s.add_development_dependency lib}
   s.add_runtime_dependency "treetop"
 end
