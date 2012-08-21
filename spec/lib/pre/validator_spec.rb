@@ -1,7 +1,4 @@
-require 'spec_helper'
-require 'pre/validator'
-require 'pre/server_validator'
-require 'pre/fake_validation'
+require_relative '../../spec_helper'
 require 'pry'
 describe Pre::Validator do
   def test_validator options={}

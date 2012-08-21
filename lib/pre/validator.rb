@@ -1,7 +1,13 @@
 require 'treetop'
+require 'pre/validators/format'
+require 'pre/validators/domain'
 module Pre
   class Validator
+    include Validators::Format
+    include Validators::Domain
+
     attr_accessor :raw_address
+
     def initialize options = {}
       @options = defaults options
     end
@@ -18,18 +24,11 @@ module Pre
       @raw_address = new_address
     end
 
-
-    def valid_format?
-      return false unless parsed.respond_to? :domain
-      parsed.domain.dot_atom_text.elements.size > 1
-    end
-
-    def valid_domain?(validator = Pre::ServerValidator)
-      validator = validator.new(parsed.domain.text_value)
-      validator.valid?
-    end
-
     private
+
+    def domain
+      parsed.domain.text_value
+    end
 
     def validators validators
       Array(validators || @options[:validators])
@@ -54,7 +53,7 @@ module Pre
       Treetop.load File.join(File.dirname(__FILE__), 'rfc2822')
       @parser = RFC2822Parser.new  
       @parser.parse @raw_address
-      @parsed = @parser._nt_address
+      @parsed = @parser._nt_address#.tap {|t| binding.pry}
     end
 
   end
