@@ -34,6 +34,10 @@ module Pre
       @options[:cache_store].write key, value
     end
 
+    def cache_fetch key, &block
+      @options[:cache_store].fetch key, &block
+    end
+
     private
 
     def domain

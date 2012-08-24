@@ -29,33 +29,33 @@ Pre by default has built in validators for RFC2822 and DNS MX record verificatio
 
 Pre can take blocks for custom validators
 
-    require 'pre'
-	no_gmail = lambda do |address|
-		address !~ /gmail.com$/
-	end
-	validator = Pre::Validator.new :validators => [:format, no_gmail]
-	validator.valid? "foo@gmail.com" # => false
-	
+  require 'pre'
+  no_gmail = lambda do |address|
+    address !~ /gmail.com$/
+  end
+  validator = Pre::Validator.new :validators => [:format, no_gmail]
+  validator.valid? "foo@gmail.com" # => false
+  
 Pre can take any object that implements the valid? method
 
     require 'pre'
     class ComplexValidator
-    	def valid? address
-    		return true unless address ~= /gmail.com$/
-    		# do not allow user+label@gmail.com 
-    		address !~ /\+.+@/
-    	end
+      def valid? address
+        return true unless address =~ /gmail.com$/
+        # do not allow user+label@gmail.com 
+        address !~ /\+.+@/
+      end
     end
-    validator = Pre::Validator.new :validators => [:server, ComplexValidator.new]
+    validator = Pre::Validator.new :validators => [:domain, ComplexValidator.new]
     validator.valid? "john+spam@gmail.com" # => false
  
  Pre can also take alternate configuration for a single address
  
- 	require 'pre'
- 	validator = Pre::Validator.new :validators => :format
- 	validator.valid? "john@example.co.uk", :validators => lambda do |address|
- 	  address =~ /example.co.nz$/
- 	end # => false
+  require 'pre'
+  validator = Pre::Validator.new :validators => :format
+  validator.valid? "john@example.co.uk", :validators => lambda { |address|
+    address =~ /example.co.nz$/
+  } # => false
     
 ### Caching
  
@@ -87,3 +87,4 @@ Ack
 ---
 
 The RFC treetop grammars are pulled from the fantastic [mail](https://github.com/mikel/mail) gem.
+

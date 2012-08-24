@@ -65,6 +65,7 @@ describe Pre::Validator do
       validating_delegate.expects(:valid?).returns(false)
       @validator.valid?("any@address.com").should be_false
     end
+
     #context "passing the validator to the validating class as optional second argument" do
       #it "only passes the address to the validator if it only accepts one argument" do
         #validating_object = Object.new

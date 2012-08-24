@@ -5,6 +5,9 @@ module Pre
       end
       def write key, val
       end
+      def fetch key
+        yield
+      end
     end
   end
 end
