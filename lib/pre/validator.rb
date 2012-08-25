@@ -72,11 +72,16 @@ module Pre
       @options = options
     end
 
+    def rfc2822_parser(treetop = Treetop)
+      ['rfc2822_obsolete', 'rfc2822'].each do |grammar|
+        treetop.require File.join(File.dirname(__FILE__), grammar)
+      end
+      RFC2822Parser.new
+    end
+
     def parsed
       return @parsed if @parsed
-      Treetop.load File.join(File.dirname(__FILE__), 'rfc2822_obsolete')
-      Treetop.load File.join(File.dirname(__FILE__), 'rfc2822')
-      @parser = RFC2822Parser.new  
+      @parser = rfc2822_parser
       @parser.parse @raw_address
       @parsed = @parser._nt_address#.tap {|t| binding.pry}
     end

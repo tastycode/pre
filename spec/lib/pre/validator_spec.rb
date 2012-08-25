@@ -66,19 +66,6 @@ describe Pre::Validator do
       @validator.valid?("any@address.com").should be_false
     end
 
-    #context "passing the validator to the validating class as optional second argument" do
-      #it "only passes the address to the validator if it only accepts one argument" do
-        #validating_object = Object.new
-        #class << validating_object
-          #def valid?(address)
-            #false
-          #end
-        #end
-        #@validator.expects(:valid?).with("foo@bar.com").returns(false) 
-        #@validator = test_validator :validators => validating_object
-        #@validator.valid?("foo@bar.com").should be_false
-      #end
-    #end
   end
   context "caching config" do
     context "allows a cache store to be configured" do
