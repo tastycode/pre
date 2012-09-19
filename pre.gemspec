@@ -7,9 +7,9 @@ Gem::Specification.new do |s|
   s.version     = Pre::VERSION
   s.authors     = ["Thomas Devol"]
   s.email       = ["thomas.devol@gmail.com"]
-  s.homepage    = ""
+  s.homepage    = "http://www.github.com/vajrapani666/pre"
   s.summary     = %q{Pretty reliable email validator}
-  s.description = %q{Checks email using RFC2822 compliant parser, Requests MX records for server validation}
+  s.description = %q{Checks email using RFC2822 compliant parser, Requests MX records for server validation. Supports caching}
 
   s.rubyforge_project = "pre"
 
