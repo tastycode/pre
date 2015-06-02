@@ -20,6 +20,6 @@ Gem::Specification.new do |s|
 
   ["rspec", "mocha", "pry-nav"].each {|lib| s.add_development_dependency lib}
   s.add_runtime_dependency "treetop"
-  s.add_runtime_dependency "active_support"
+  s.add_runtime_dependency "activesupport"
   s.add_runtime_dependency "dalli"
 end
