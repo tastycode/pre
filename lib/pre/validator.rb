@@ -74,7 +74,7 @@ module Pre
 
     def rfc2822_parser(treetop = Treetop)
       ['rfc2822_obsolete', 'rfc2822'].each do |grammar|
-        treetop.require File.join(File.dirname(__FILE__), grammar)
+        treetop.load File.join(File.dirname(__FILE__), grammar)
       end
       RFC2822Parser.new
     end
